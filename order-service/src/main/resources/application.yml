@@ -1,0 +1,40 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: order-service
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/orders
+    username: ${DB_USER:shop}
+    password: ${DB_PASSWORD:shop}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate      # Flyway owns the schema; Hibernate only checks the entities match it
+    open-in-view: false       # no lazy DB access from controllers
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9094}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      properties:
+        enable.idempotence: true   # broker drops duplicates caused by producer retries
+        max.block.ms: 5000         # fail fast when Kafka is down, instead of blocking the relay for 60s
+
+outbox:
+  poll-interval-ms: 500
+  batch-size: 100
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true          # /actuator/health/liveness and /readiness for Docker/Kubernetes
