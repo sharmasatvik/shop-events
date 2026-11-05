@@ -1,6 +1,9 @@
 package com.example.shop.events;
 
-/** Values of the eventType header. Past tense: an event is a fact that already happened. */
+/**
+ * Values of the eventType header. Past tense: an event is a fact that already
+ * happened.
+ */
 public final class EventTypes {
 
     public static final String ORDER_PLACED = "OrderPlaced";
