@@ -7,11 +7,14 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Repository to perform data access operations on {@link OutboxEvent}.
+ */
 public interface OutboxRepository extends JpaRepository<OutboxEvent, UUID> {
 
     /**
      * Locks the next batch of unpublished rows for this transaction.
-     *
+     * <p>
      * FOR UPDATE SKIP LOCKED is what makes the relay safe with several app instances:
      * instance A locks rows 1-100, instance B skips them and takes the next ones,
      * so no two instances publish the same row at the same time.
@@ -23,5 +26,5 @@ public interface OutboxRepository extends JpaRepository<OutboxEvent, UUID> {
             LIMIT :limit
             FOR UPDATE SKIP LOCKED
             """, nativeQuery = true)
-    List<OutboxEvent> lockNextBatch(@Param("limit") int limit);
+    List<OutboxEvent> lockNextBatch(@Param("limit") final int limit);
 }

@@ -8,34 +8,70 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * An event for storing outbox messages from the system.
+ */
 @Entity
 @Table(name = "outbox")
 public class OutboxEvent {
 
+    /**
+     * Unique identifier of the message.
+     */
     @Id
     private UUID id;
 
-    private String topic;
+    /**
+     * The unique identifier of the order associated with the message. Used
+     * deliberately for easy lookup.
+     */
     private UUID aggregateId;
+
+    /**
+     * The event type.
+     */
     private String eventType;
+
+    /**
+     * The payload of the request or response.
+     */
     @Column(columnDefinition = "text")
     private String payload;
+
+    /**
+     * The topic associated with the message.
+     */
+    private String topic;
+
+    /**
+     * The time at which the message was created.
+     */
     private Instant createdAt;
+
+    /**
+     * The time at which the message was published.
+     */
     private Instant publishedAt;
 
     protected OutboxEvent() {
         // for JPA
     }
 
-    public static OutboxEvent of(UUID eventId, String topic, UUID aggregateId, String eventType, String payload) {
-        OutboxEvent e = new OutboxEvent();
-        e.id = eventId;
-        e.topic = topic;
-        e.aggregateId = aggregateId;
-        e.eventType = eventType;
-        e.payload = payload;
-        e.createdAt = Instant.now();
-        return e;
+    public static OutboxEvent of(final UUID eventId
+            , final String topic
+            , final UUID aggregateId
+            , final String eventType
+            , final String payload) {
+        var event = new OutboxEvent();
+
+        event.id = eventId;
+        event.topic = topic;
+        event.aggregateId = aggregateId;
+        event.eventType = eventType;
+        event.payload = payload;
+        event.createdAt = Instant.now();
+
+        return event;
     }
 
     public void markPublished() {
