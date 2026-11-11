@@ -32,6 +32,11 @@ public class InventoryService {
         this.stockRepository = stockRepository;
     }
 
+    /**
+     * Handles processing of inventory for a specified order and sku.
+     *
+     * @param order The order for which the processing is required.
+     */
     @Transactional
     public void handle(final OrderPlaced order) {
         if (!processedEvents.markProcessed(order.eventId())) {

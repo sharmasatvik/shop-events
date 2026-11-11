@@ -1,9 +1,9 @@
 package com.shop.order.controller;
 
-import com.shop.order.OrderService;
 import com.shop.order.domain.Order;
 import com.shop.order.dto.OrderResponse;
 import com.shop.order.dto.PlaceOrderRequest;
+import com.shop.order.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

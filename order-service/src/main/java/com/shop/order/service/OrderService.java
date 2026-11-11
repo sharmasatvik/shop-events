@@ -1,12 +1,12 @@
-package com.shop.order;
+package com.shop.order.service;
 
 import com.shop.events.EventTypes;
 import com.shop.events.OrderPlaced;
 import com.shop.events.Topics;
-import com.shop.order.dto.OrderResponse;
-import com.shop.order.dto.PlaceOrderRequest;
 import com.shop.order.domain.Order;
 import com.shop.order.domain.OrderRepository;
+import com.shop.order.dto.OrderResponse;
+import com.shop.order.dto.PlaceOrderRequest;
 import com.shop.outbox.OutboxWriter;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
