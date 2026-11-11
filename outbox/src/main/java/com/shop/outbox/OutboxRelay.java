@@ -46,19 +46,18 @@ public class OutboxRelay {
 
     private final KafkaTemplate<String, String> kafka;
 
-    @Value("${outbox.batch-size:100}")
     private final int batchSize;
 
     /**
      * Creates a new outbox relay messaging pipeline.
      *
-     * @param outbox    The messages to relay.
+     * @param outbox    The repository from where the rows are read from.
      * @param kafka     The template of the messages.
-     * @param batchSize The batch size of the message.
+     * @param batchSize Max rows published per poll, defaults to 100.
      */
     public OutboxRelay(final OutboxRepository outbox
             , final KafkaTemplate<String, String> kafka
-            , @Value("${outbox.batch-size}") final int batchSize) {
+            , @Value("${outbox.batch-size:100}") final int batchSize) {
         this.outbox = outbox;
         this.kafka = kafka;
         this.batchSize = batchSize;
@@ -91,14 +90,14 @@ public class OutboxRelay {
                 // Rolls back this transaction: nothing in this batch is marked
                 // published, so rows that already reached Kafka in this batch
                 // will be sent again. Duplicates, never losses.
-                throw new IllegalStateException("Kafka publish failed for outbox row " + event.getId()
-                        + ", will retry on next poll: " + e.getMessage(), e);
+                throw new IllegalStateException("Kafka publish failed for outbox row [" + event.getId()
+                        + "], will retry on next poll: " + e.getMessage(), e);
             }
 
             // dirty-checked by JPA, saved on commit
             event.markPublished();
 
-            log.info("Published {} {} for order {}"
+            log.info("Published event: [{}] - [{}], for aggregate: [{}]"
                     , event.getEventType()
                     , event.getId()
                     , event.getAggregateId());

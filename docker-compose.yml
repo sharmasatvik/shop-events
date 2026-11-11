@@ -70,6 +70,28 @@ services:
       kafka:
         condition: service_healthy
 
+  inventory-service:
+    build:
+      context: .
+      dockerfile: inventory-service/Dockerfile
+    container_name: shop-inventory-service
+    profiles: [ "apps" ]
+    ports:
+      - "8082:8082"
+    environment:
+      DB_HOST: postgres
+      KAFKA_BOOTSTRAP: kafka:9092
+      JAVA_OPTS: "-XX:MaxRAMPercentage=75 -XX:+ExitOnOutOfMemoryError"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+
   order-service:
     build:
       context: .
