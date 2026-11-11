@@ -6,11 +6,11 @@ package com.shop.events;
  */
 public final class EventTypes {
 
-    public static final String ORDER_PLACED = "OrderPlaced";
-    public static final String ORDER_CONFIRMED = "OrderConfirmed";
-    public static final String ORDER_REJECTED = "OrderRejected";
-    public static final String STOCK_RESERVED = "StockReserved";
-    public static final String STOCK_REJECTED = "StockRejected";
+    public static final String ORDER_PLACED = "Order Placed";
+    public static final String ORDER_CONFIRMED = "Order Confirmed";
+    public static final String ORDER_REJECTED = "Order Rejected";
+    public static final String STOCK_RESERVED = "Stock Reserved";
+    public static final String STOCK_REJECTED = "Stock Rejected";
 
     private EventTypes() {
     }

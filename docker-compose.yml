@@ -70,6 +70,15 @@ services:
       kafka:
         condition: service_healthy
 
+  adminer:
+    image: adminer:latest
+    container_name: shop-adminer
+    ports:
+      - "8091:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   inventory-service:
     build:
       context: .
@@ -97,11 +106,12 @@ services:
       context: .
       dockerfile: order-service/Dockerfile
     container_name: shop-order-service
-    profiles:
+    profiles: [ "apps" ]
+    ports:
       - "8081:8081"
     environment:
       DB_HOST: postgres
-      KAFKA_BOOTSTRAP: kafka:8092
+      KAFKA_BOOTSTRAP: kafka:9092
       JAVA_OPTS: "-XX:MaxRAMPercentage=75 -XX:+ExitOnOutOfMemoryError"
     depends_on:
       postgres:
