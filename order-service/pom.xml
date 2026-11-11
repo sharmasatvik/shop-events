@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.example.shop</groupId>
+        <groupId>com.shop</groupId>
         <artifactId>shop-events</artifactId>
         <version>1.0.0</version>
     </parent>
@@ -14,7 +14,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.example.shop</groupId>
+            <groupId>com.shop</groupId>
             <artifactId>events</artifactId>
         </dependency>
 
@@ -58,6 +58,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.shop</groupId>
+            <artifactId>outbox</artifactId>
         </dependency>
     </dependencies>
 
