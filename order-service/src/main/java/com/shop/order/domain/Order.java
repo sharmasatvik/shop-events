@@ -27,6 +27,11 @@ public class Order {
     private int quantity;
 
     /**
+     * Reason for rejecting the order.
+     */
+    private String rejectReason;
+
+    /**
      * The SKU identifier.
      */
     private String sku;
@@ -51,6 +56,15 @@ public class Order {
         // for JPA
     }
 
+    /**
+     * Creates a new order.
+     *
+     * @param customerId The customer for which the order is being created.
+     * @param sku        The sku included in that order.
+     * @param quantity   The quantity of the order.
+     *
+     * @return The order which has been created.
+     */
     public static Order newPending(final String customerId
             , final String sku
             , final int quantity) {
@@ -68,6 +82,49 @@ public class Order {
         return order;
     }
 
+    /**
+     * Confirms an order.
+     */
+    public void confirm() {
+        requirePending();
+
+        this.status = OrderStatus.CONFIRMED;
+        this.updatedAt = Instant.now();
+    }
+
+    /**
+     * Rejects an order with a reason.
+     *
+     * @param reason The reason for rejecting the order.
+     */
+    public void reject(final String reason) {
+        requirePending();
+
+        this.rejectReason = reason;
+        this.status = OrderStatus.REJECTED;
+        this.updatedAt = Instant.now();
+    }
+
+    /**
+     * Checks whether the order is in pending state.
+     */
+    @Transient
+    public boolean isPending() {
+        return status == OrderStatus.PENDING;
+    }
+
+    /**
+     * Enforces that the order being confirmed or rejected is in "Pending"
+     * state.
+     *
+     * @throws IllegalStateException if the order is no longer pending
+     */
+    private void requirePending() {
+        if (!isPending()) {
+            throw new IllegalStateException("Order: " + id + " is already in: " + status + " status.");
+        }
+    }
+
     public UUID getId() {
         return id;
     }
@@ -82,6 +139,10 @@ public class Order {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public String getRejectReason() {
+        return rejectReason;
     }
 
     public OrderStatus getStatus() {
