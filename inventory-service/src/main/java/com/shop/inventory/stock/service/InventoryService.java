@@ -1,9 +1,9 @@
 package com.shop.inventory.stock.service;
 
 import com.shop.events.*;
-import com.shop.inventory.idempotency.ProcessedEvents;
 import com.shop.inventory.stock.repository.StockRepository;
 import com.shop.outbox.OutboxWriter;
+import com.shop.outbox.ProcessedEvents;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

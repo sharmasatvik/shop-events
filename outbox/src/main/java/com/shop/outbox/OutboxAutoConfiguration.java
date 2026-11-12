@@ -20,6 +20,6 @@ import org.springframework.context.annotation.Import;
  */
 @AutoConfiguration(before = HibernateJpaAutoConfiguration.class)
 @AutoConfigurationPackage
-@Import({OutboxWriter.class, OutboxRelay.class})
+@Import({OutboxWriter.class, OutboxRelay.class, ProcessedEvents.class})
 public class OutboxAutoConfiguration {
 }

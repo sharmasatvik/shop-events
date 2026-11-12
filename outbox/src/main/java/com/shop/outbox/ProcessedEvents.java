@@ -1,4 +1,4 @@
-package com.shop.inventory.idempotency;
+package com.shop.outbox;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
