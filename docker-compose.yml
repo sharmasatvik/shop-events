@@ -16,7 +16,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
       - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro   # creates the orders + inventory DBs
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U shop"]
+      test: [ "CMD-SHELL", "pg_isready -U shop" ]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -24,11 +24,11 @@ services:
   redis:
     image: redis:7.4-alpine
     container_name: shop-redis
-    command: ["redis-server", "--maxmemory", "128mb", "--maxmemory-policy", "allkeys-lru"]
+    command: [ "redis-server", "--maxmemory", "128mb", "--maxmemory-policy", "allkeys-lru" ]
     ports:
       - "6379:6379"
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -53,7 +53,7 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
     healthcheck:
-      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 > /dev/null 2>&1"]
+      test: [ "CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 > /dev/null 2>&1" ]
       interval: 10s
       timeout: 10s
       retries: 12
@@ -69,6 +69,59 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
+
+  adminer:
+    image: adminer:latest
+    container_name: shop-adminer
+    ports:
+      - "8091:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  inventory-service:
+    build:
+      context: .
+      dockerfile: inventory-service/Dockerfile
+    container_name: shop-inventory-service
+    profiles: [ "apps" ]
+    ports:
+      - "8082:8082"
+    environment:
+      DB_HOST: postgres
+      KAFKA_BOOTSTRAP: kafka:9092
+      JAVA_OPTS: "-XX:MaxRAMPercentage=75 -XX:+ExitOnOutOfMemoryError"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+
+  order-service:
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
+    container_name: shop-order-service
+    profiles: [ "apps" ]
+    ports:
+      - "8081:8081"
+    environment:
+      DB_HOST: postgres
+      KAFKA_BOOTSTRAP: kafka:9092
+      JAVA_OPTS: "-XX:MaxRAMPercentage=75 -XX:+ExitOnOutOfMemoryError"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 512m
 
 volumes:
   postgres-data:

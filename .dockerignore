@@ -1,0 +1,10 @@
+docker-compose*.yml
+.env
+.git/
+.gitignore
+.idea/
+*.iml
+*.log
+.vscode
+**/target/
+!target/*.jar
